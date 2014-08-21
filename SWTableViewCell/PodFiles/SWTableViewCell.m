@@ -662,8 +662,13 @@ static NSString * const kTableViewPanState = @"state";
             }
         }
     }
-    
-    *targetContentOffset = [self contentOffsetForCellState:_cellState];
+  
+    if (self.cancelScroll) {
+        *targetContentOffset = scrollView.contentOffset;
+        [scrollView setContentOffset:[self contentOffsetForCellState:kCellStateCenter] animated:YES];
+        self.cancelScroll = NO;
+    } else
+        *targetContentOffset = [self contentOffsetForCellState:_cellState];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView

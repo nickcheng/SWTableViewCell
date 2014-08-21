@@ -38,6 +38,7 @@ typedef NS_ENUM(NSInteger, SWCellState)
 
 @property (nonatomic, copy) NSArray *leftUtilityButtons;
 @property (nonatomic, copy) NSArray *rightUtilityButtons;
+@property (nonatomic, assign) BOOL cancelScroll;
 
 @property (nonatomic, weak) id <SWTableViewCellDelegate> delegate;
 
