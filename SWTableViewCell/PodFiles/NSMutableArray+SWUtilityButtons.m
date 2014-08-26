@@ -10,6 +10,10 @@
 
 @implementation NSMutableArray (SWUtilityButtons)
 
+- (void)sw_addUtilityButton:(UIButton *)button {
+  [self addObject:button];
+}
+
 - (void)sw_addUtilityButtonWithColor:(UIColor *)color title:(NSString *)title
 {
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
