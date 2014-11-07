@@ -242,7 +242,8 @@ static NSString * const kTableViewPanState = @"state";
         _leftUtilityButtons = leftUtilityButtons;
         
         self.leftUtilityButtonsView.utilityButtons = leftUtilityButtons;
-        
+
+        [self.leftUtilityButtonsView layoutIfNeeded];
         [self layoutIfNeeded];
     }
 }
@@ -252,7 +253,8 @@ static NSString * const kTableViewPanState = @"state";
     _leftUtilityButtons = leftUtilityButtons;
     
     [self.leftUtilityButtonsView setUtilityButtons:leftUtilityButtons WithButtonWidth:width];
-    
+
+    [self.leftUtilityButtonsView layoutIfNeeded];
     [self layoutIfNeeded];
 }
 
@@ -262,7 +264,8 @@ static NSString * const kTableViewPanState = @"state";
         _rightUtilityButtons = rightUtilityButtons;
         
         self.rightUtilityButtonsView.utilityButtons = rightUtilityButtons;
-        
+
+        [self.rightUtilityButtonsView layoutIfNeeded];
         [self layoutIfNeeded];
     }
 }
@@ -272,7 +275,8 @@ static NSString * const kTableViewPanState = @"state";
     _rightUtilityButtons = rightUtilityButtons;
     
     [self.rightUtilityButtonsView setUtilityButtons:rightUtilityButtons WithButtonWidth:width];
-    
+
+    [self.rightUtilityButtonsView layoutIfNeeded];
     [self layoutIfNeeded];
 }
 
@@ -309,6 +313,19 @@ static NSString * const kTableViewPanState = @"state";
     }
     
     [self updateCellState];
+}
+
+- (void)setFrame:(CGRect)frame
+{
+    // Fix for new screen sizes
+    // Initially, the cell is still 320 points wide
+    // We need to layout our subviews again when this changes so our constraints clip to the right width
+    BOOL widthChanged = (self.frame.size.width != frame.size.width);
+    
+    [super setFrame:frame];
+    
+    if (widthChanged)
+        [self layoutIfNeeded];
 }
 
 - (void)prepareForReuse
@@ -509,17 +526,29 @@ static NSString * const kTableViewPanState = @"state";
 
 - (CGFloat)leftUtilityButtonsWidth
 {
-    return CGRectGetWidth(self.leftUtilityButtonsView.frame);
+#if CGFLOAT_IS_DOUBLE
+    return round(CGRectGetWidth(self.leftUtilityButtonsView.frame));
+#else
+    return roundf(CGRectGetWidth(self.leftUtilityButtonsView.frame));
+#endif
 }
 
 - (CGFloat)rightUtilityButtonsWidth
 {
-    return CGRectGetWidth(self.rightUtilityButtonsView.frame) + self.additionalRightPadding;
+#if CGFLOAT_IS_DOUBLE
+    return round(CGRectGetWidth(self.rightUtilityButtonsView.frame) + self.additionalRightPadding);
+#else
+    return roundf(CGRectGetWidth(self.rightUtilityButtonsView.frame) + self.additionalRightPadding);
+#endif
 }
 
 - (CGFloat)utilityButtonsPadding
 {
-    return [self leftUtilityButtonsWidth] + [self rightUtilityButtonsWidth];
+#if CGFLOAT_IS_DOUBLE
+    return round([self leftUtilityButtonsWidth] + [self rightUtilityButtonsWidth]);
+#else
+    return roundf([self leftUtilityButtonsWidth] + [self rightUtilityButtonsWidth]);
+#endif
 }
 
 - (CGPoint)contentOffsetForCellState:(SWCellState)state
