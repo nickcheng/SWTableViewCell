@@ -187,6 +187,7 @@ static NSString * const kTableViewPanState = @"state";
 
 - (void)dealloc
 {
+    _cellScrollView.delegate = nil;
     [self removeOldTableViewPanObserver];
 }
 
@@ -752,6 +753,10 @@ static NSString * const kTableViewPanState = @"state";
     }
     
     [self updateCellState];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(swipeableTableViewCell:didScroll:)]) {
+        [self.delegate swipeableTableViewCell:self didScroll:scrollView];
+    }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
